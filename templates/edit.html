@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Επεξεργασία Προϊόντος | StockMaster Pro</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        /* 2. Design Tokens: Ορίζουμε μεταβλητές για εύκολη συντήρηση (Scalability). 
+           Αν αλλάξει το brand color, το αλλάζουμε μόνο εδώ. */
+        :root {
+            --primary: #2563eb;
+            --success: #16a34a;
+            --bg-color: #f8fafc;
+            --container-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --input-focus: #3b82f6;
+        }
+
+        /* 3. Dark Mode Logic: Χρήση CSS Variables για ακαριαία εναλλαγή θέματος 
+           χωρίς να ξαναγράφουμε όλο το CSS. */
+        body.dark-mode {
+            --bg-color: #0f172a;
+            --container-bg: #1e293b;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border: #334155;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            transition: all 0.3s ease;
+        }
+
+        /* 4. UI/UX: Χρήση σκιών (box-shadow) για να δώσουμε βάθος (elevation) 
+           και να ξεχωρίζει η φόρμα από το φόντο. */
+        .container {
+            background: var(--container-bg);
+            padding: 40px;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        /* 5. Accessibility: Τα labels είναι απαραίτητα για screen readers 
+           και για να μην χάνεται ο χρήστης αν σβήσει το placeholder. */
+        label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--text-muted);
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            background: transparent;
+            color: var(--text-main);
+            font-size: 1rem;
+            box-sizing: border-box; /* 6. Box Sizing: Εγγυάται ότι το padding δεν θα μεγαλώσει το πλάτος του input */
+            transition: border-color 0.2s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--input-focus);
+        }
+
+        /* 7. Layout Optimization: Χρήση Grid για ομαδοποίηση σχετικών πεδίων (π.χ. Τιμές) 
+           ώστε η φόρμα να μην φαίνεται ατέλειωτη. */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .save-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--success);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s;
+        }
+
+        .save-btn:hover {
+            filter: brightness(1.1); /* 8. Feedback: Μικρή αλλαγή φωτεινότητας στο hover δίνει ζωή στο UI */
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2><i class="fas fa-edit"></i> dit</h2>
+        
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 25px;">
+            Modification of details for: <strong>{{ item.name }}</strong>
+        </p>
+
+        <form method="POST">
+            <div class="form-group">
+                <label><i class="fas fa-barcode"></i> Serial Number SKU</label>
+                <input type="text" name="code" value="{{ item.code }}" required>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-tag"></i> Name</label>
+                <input type="text" name="item" value="{{ item.name }}" required>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Quantity</label>
+                    <input type="number" name="quantity" value="{{ item.qty }}" required>
+                </div>
+                <div class="form-group">
+                    <label>Minimum limit</label>
+                    <input type="number" name="min_limit" value="{{ item.min_limit }}" required>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label> Purchase price(€)</label>
+                    <input type="number" step="0.01" name="buy_price" value="{{ item.buy_price }}" required>
+                </div>
+                <div class="form-group">
+                    <label> Selling price (€)</label>
+                    <input type="number" step="0.01" name="sell_price" value="{{ item.sell_price }}" required>
+                </div>
+            </div>
+
+            <button type="submit" class="save-btn">
+                <i class="fas fa-check-circle"></i> Data update
+            </button>
+
+            <a href="/" style="display:block; text-align:center; margin-top:20px; color:var(--text-muted); text-decoration:none;">
+                <i class="fas fa-times"></i> Cancel
+            </a>
+        </form>
+    </div>
+
+    <script>
+        /* 11. Persistence: Εφαρμόζουμε το θέμα πριν ο χρήστης δει τη σελίδα (FOUC prevention). */
+        if (localStorage.getItem("theme") === "dark") {
+            document.body.classList.add("dark-mode");
+        }
+    </script>
+</body>
+</html>
